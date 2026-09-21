@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b1120" />
+  <title>i7 Hostel Store - Midnight Canteen & Room Delivery</title>
+
+  <!-- Canvas Confetti for Order Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #ff416c;
+      --secondary: #ff4b2b;
+      --accent: #8a2387;
+      --whatsapp: #22c55e;
+      --whatsapp-dark: #16a34a;
+      --bg: #0b1120;
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --gold: #f59e0b;
+      --neon-glow: 0 0 15px rgba(255, 65, 108, 0.4);
+    }
+
+    body.cyberpunk-theme {
+      --bg: #05050a;
+      --card-bg: #111827;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1f2937;
+      --neon-glow: 0 0 20px rgba(56, 189, 248, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--bg) 0%, #17133a 50%, #29084a 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+      padding-bottom: 120px;
+      overflow-x: hidden;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    /* Floating Background Snacks Animation */
+    .floating-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .snack-sticker {
+      position: absolute;
+      bottom: -60px;
+      font-size: 2rem;
+      user-select: none;
+      opacity: 0.28;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+      animation: floatUpward linear infinite;
+    }
+
+    .sticker-1 { left: 8%; font-size: 2.2rem; animation-duration: 14s; animation-delay: 0s; }
+    .sticker-2 { left: 22%; font-size: 1.8rem; animation-duration: 18s; animation-delay: 2s; }
+    .sticker-3 { left: 38%; font-size: 2.4rem; animation-duration: 16s; animation-delay: 5s; }
+    .sticker-4 { left: 54%; font-size: 2rem; animation-duration: 20s; animation-delay: 1s; }
+    .sticker-5 { left: 70%; font-size: 2.3rem; animation-duration: 15s; animation-delay: 4s; }
+    .sticker-6 { left: 86%; font-size: 1.9rem; animation-duration: 19s; animation-delay: 3s; }
+    .sticker-7 { left: 45%; font-size: 2.5rem; animation-duration: 22s; animation-delay: 7s; }
+    .sticker-8 { left: 92%; font-size: 2.1rem; animation-duration: 17s; animation-delay: 8s; }
+
+    @keyframes floatUpward {
+      0% { transform: translateY(0) rotate(0deg) scale(0.9); opacity: 0; }
+      15% { opacity: 0.35; }
+      85% { opacity: 0.3; }
+      100% { transform: translateY(-115vh) rotate(360deg) scale(1.15); opacity: 0; }
+    }
+
+    /* App Shell Elements */
+    header, .marquee-announcement, .hero, .controls-container, main, #status-banner, #delivery-tracker {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Top Marquee Announcement Bar */
+    .marquee-announcement {
+      background: linear-gradient(90deg, #ff416c, #8a2387);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 20s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-100%, 0); }
+    }
+
+    /* Header */
+    header {
+      background: rgba(11, 17, 32, 0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      background: linear-gradient(to right, #ff416c, #ff4b2b, #f9cb28);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 7px 10px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cart-pill {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+    }
+
+    /* Store Status Notice */
+    #status-banner {
+      background: #ef4444;
+      color: white;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    #delivery-tracker {
+      display: none;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Hero Banner */
+    .hero {
+      max-width: 640px;
+      margin: 12px auto 6px;
+      padding: 0 16px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
+      padding: 18px;
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 10px 25px rgba(233, 64, 87, 0.35);
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hero-card h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .hero-card p {
+      font-size: 0.88rem;
+      opacity: 0.95;
+    }
+
+    /* Leaderboard Card */
+    .leaderboard-badge {
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Search & Filter Section */
+    .controls-container {
+      max-width: 640px;
+      margin: 14px auto 0;
+      padding: 0 16px;
+    }
+
+    .search-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      backdrop-filter: blur(8px);
+      margin-bottom: 12px;
+    }
+
+    .search-box:focus {
+      border-color: #ff416c;
+    }
+
+    .categories-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-chip {
+      white-space: nowrap;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-chip.active {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 2px 10px rgba(255, 65, 108, 0.4);
+    }
+
+    main {
+      max-width: 640px;
+      margin: 16px auto;
+      padding: 0 16px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 12px 0;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      position: relative;
+      color: var(--text);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--neon-glow);
+    }
+
+    .card.sold-out {
+      opacity: 0.65;
+      filter: grayscale(0.6);
+    }
+
+    .card img {
+      width: 82px;
+      height: 82px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+    }
+
+    .card-info {
+      flex: 1;
+    }
+
+    .badge-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .card-badge {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .bestseller-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .card-info h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .card-info .price {
+      font-weight: 800;
+      color: #e11d48;
+      font-size: 1.15rem;
+      margin-top: 2px;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+
+    .add-btn {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+      transition: transform 0.15s;
+    }
+
+    .add-btn:active {
+      transform: scale(0.92);
+    }
+
+    .add-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .admin-item-tools {
+      display: none;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .toggle-stock-btn, .edit-item-btn, .delete-item-btn {
+      border: none;
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggle-stock-btn { background: #e2e8f0; color: #334155; }
+    .edit-item-btn { background: #dbeafe; color: #1e40af; }
+    .delete-item-btn { background: #fee2e2; color: #ef4444; }
+
+    /* Free Delivery Progress Bar */
+    .delivery-progress-container {
+      background: #f1f5f9;
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .delivery-progress-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff416c, #22c55e);
+      transition: width 0.3s;
+    }
+
+    /* Modal / Bottom Drawer */
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 80;
+    }
+
+    .drawer {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px;
+      max-width: 640px;
+      margin: auto;
+      z-index: 90;
+      max-height: 88vh;
+      overflow-y: auto;
+      color: #0f172a;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .drawer.active, .drawer-overlay.active {
+      display: block;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .close-btn {
+      background: #f1f5f9;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin: 16px 0;
+      color: #0f172a;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: #ff416c;
+    }
+
+    .checkbox-tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .checkbox-tile input {
+      width: 18px;
+      height: 18px;
+      accent-color: #ff416c;
+    }
+
+    /* UPI & Payment Box */
+    .upi-box {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .upi-pay-btn {
+      display: block;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+
+    .copy-upi-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .qr-container {
+      margin: 8px 0;
+    }
+
+    .qr-container img {
+      width: 190px;
+      height: 190px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 6px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      object-fit: contain;
+    }
+
+    .tip-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .place-order-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .place-order-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* Toast Notification (Social Proof) */
+    .recent-order-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      z-index: 70;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      transform: translateY(120px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .recent-order-toast.show {
+      transform: translateY(0);
+    }
+
+    /* Spin the Wheel Modal */
+    .wheel-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 105;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .wheel-card {
+      background: #1e1b4b;
+      color: white;
+      padding: 24px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .spin-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+
+    /* Admin Elements */
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .stat-card h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .stat-card div {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 4px;
+    }
+
+    .status-toggle-card {
+      background: #f1f5f9;
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .save-item-btn, .export-btn {
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .save-item-btn {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #fff;
+    }
+
+    .export-btn {
+      background: #10b981;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .image-preview {
+      width: 100%;
+      height: 120px;
+      border-radius: 10px;
+      border: 1.5px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #f8fafc;
+      margin-top: 6px;
+    }
+
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* i7 COMPANY 30s AD MODAL */
+    .ad-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .ad-card {
+      background: linear-gradient(145deg, #111827 0%, #1e1b4b 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      max-width: 440px;
+      width: 100%;
+      border-radius: 24px;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      position: relative;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .ad-tag {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .ad-card h2 {
+      font-size: 1.55rem;
+      font-weight: 900;
+      background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .ad-card p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+
+    .ad-stats {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ad-stat-item h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .ad-stat-item span {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .ad-price-pill {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #facc15;
+      margin-bottom: 18px;
+    }
+
+    .ad-cta-btn {
+      display: block;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      text-decoration: none;
+      padding: 13px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.35);
+    }
+
+    .ad-skip-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: not-allowed;
+    }
+
+    .ad-skip-btn.ready {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Snack Stickers Animation Background -->
+  <div class="floating-background">
+    <div class="snack-sticker sticker-1">🍟</div>
+    <div class="snack-sticker sticker-2">🍫</div>
+    <div class="snack-sticker sticker-3">🥤</div>
+    <div class="snack-sticker sticker-4">🍜</div>
+    <div class="snack-sticker sticker-5">🍬</div>
+    <div class="snack-sticker sticker-6">🥔</div>
+    <div class="snack-sticker sticker-7">🍿</div>
+    <div class="snack-sticker sticker-8">⚡</div>
+  </div>
+
+  <!-- Announcement Ticker -->
+  <div class="marquee-announcement">
+    <span class="marquee-text" id="live-marquee-text">
+      ⚡ Midnight Canteen Open till 3:30 AM! Free Room Delivery on orders above ₹100! Cooked Hot Butter Maggi & Chilled Energy Drinks Available!
+    </span>
+  </div>
+
+  <header>
+    <div class="brand">
+      <h1>⚡ i7 HOSTEL STORE</h1>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleTheme()" title="Toggle Neon Glow">🌙 Glow</button>
+      <button class="icon-btn" onclick="openWheelModal()" title="Spin for Discount">🎰 Spin</button>
+      <button class="icon-btn" onclick="promptManageLogin()">⚙️ Manage</button>
+      <button class="cart-pill" onclick="openCheckout()">
+        🛒 Cart (<span id="cart-count">0</span>)
+      </button>
+    </div>
+  </header>
+
+  <div id="status-banner">⚠️ Store is currently CLOSED. Deliveries resume shortly!</div>
+  <div id="delivery-tracker">🛵 Active Delivery: Reaching your room in ~7 mins!</div>
+
+  <!-- Hero Banner -->
+  <div class="hero">
+    <div class="hero-card">
+      <div class="hero-badge">⚡ Delivery in 5–10 mins directly to your room bed</div>
+      <h2>Midnight Hunger? Ordered & Solved.</h2>
+      <p>Chips, chilled Monster, hot Maggi, and study stationery brought straight to you.</p>
+      
+      <div class="leaderboard-badge">
+        <span>🏆 Top Room of the Month: <strong>Room 204 (B-Block)</strong></span>
+        <span>24 Orders</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Category Filters -->
+  <div class="controls-container">
+    <input type="text" id="search-input" class="search-box" placeholder="🔍 Search snacks, drinks, Maggi, stationary..." oninput="handleSearch()" />
+
+    <div class="categories-bar">
+      <button class="cat-chip active" onclick="filterCategory('All')">All Items</button>
+      <button class="cat-chip" onclick="filterCategory('Combos')">🔥 Value Combos</button>
+      <button class="cat-chip" onclick="filterCategory('Drinks')">🥤 Drinks</button>
+      <button class="cat-chip" onclick="filterCategory('Snacks')">🍟 Snacks & Chips</button>
+      <button class="cat-chip" onclick="filterCategory('Meals')">🍜 Maggi & Meals</button>
+      <button class="cat-chip" onclick="filterCategory('Sweets')">🍫 Sweets & Biscuits</button>
+      <button class="cat-chip" onclick="filterCategory('Stationary')">✏️ Late-Night Essentials</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="section-title">
+      <span>Available Menu</span>
+      <span id="active-category-indicator" style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">Showing All</span>
+    </div>
+    <div class="product-grid" id="product-container"></div>
+  </main>
+
+  <div class="drawer-overlay" id="overlay" onclick="closeAllDrawers()"></div>
+
+  <!-- Checkout Drawer -->
+  <div class="drawer" id="checkout-drawer">
+    <div class="drawer-header">
+      <h2>🛍️ Your Order Details</h2>
+      <button class="close-btn" onclick="closeAllDrawers()">&times;</button>
+    </div>
+
+    <!-- Free Delivery Meter -->
+    <div class="delivery-progress-container">
+      <div class="delivery-progress-title">
+        <span id="delivery-progress-text">Add ₹100 more for FREE Delivery!</span>
+        <span id="delivery-status-badge">₹15 Delivery Fee</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="delivery-progress-bar"></div>
+      </div>
+    </div>
+
+    <div id="cart-items-container"></div>
+
+    <div class="total-row">
+      <span>Total Payable:</span>
+      <span id="cart-total" style="color: #ff416c;">₹0</span>
+    </div>
+
+    <div id="checkout-form-section">
+      <div class="form-group">
+        <label for="cust-name">👤 Full Name (Saved for next time)</label>
+        <input type="text" id="cust-name" placeholder="e.g. Rahul Sharma" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cust-phone">📱 Mobile Number (Optional)</label>
+          <input type="tel" id="cust-phone" placeholder="e.g. 9876543210" />
+        </div>
+        <div class="form-group">
+          <label for="cust-block">🏢 Hostel Block / Wing</label>
+          <select id="cust-block">
+            <option value="A-Block">A-Block</option>
+            <option value="B-Block">B-Block</option>
+            <option value="C-Block">C-Block</option>
+            <option value="D-Block">D-Block</option>
+            <option value="Main Hostel">Main Hostel</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cust-room">🚪 Room Number</label>
+          <input type="text" id="cust-room" placeholder="e.g. 312" oninput="updateFloorEstimate()" required />
+        </div>
+        <div class="form-group">
+          <label>Floor (Auto-derived)</label>
+          <input type="text" id="cust-floor-display" value="Ground / Unknown" readonly style="background:#f1f5f9; color:#64748b;" />
+        </div>
+      </div>
+
+      <!-- Silent Delivery Checkbox -->
+      <label class="checkbox-tile">
+        <input type="checkbox" id="silent-delivery-check" />
+        <span>🤫 Roommate is sleeping (Don't knock door, WhatsApp/Call on arrival)</span>
+      </label>
+
+      <!-- Maggi Customizer / Add-on Option -->
+      <div class="form-group" id="maggi-options-group" style="display:none;">
+        <label for="maggi-custom-addon">🍜 Maggi Customization</label>
+        <select id="maggi-custom-addon" onchange="renderCartDrawer()">
+          <option value="0">Standard Cooked (No extra cost)</option>
+          <option value="5">🔥 Extra Spicy Masala (+₹5)</option>
+          <option value="15">🧀 Melted Cheese Slice (+₹15)</option>
+          <option value="-10">📦 Uncooked Raw Packet (-₹10)</option>
+        </select>
+      </div>
+
+      <!-- Drinks Temperature Option -->
+      <div class="form-group" id="drink-options-group" style="display:none;">
+        <label for="drink-temp-option">🥤 Drink Temperature</label>
+        <select id="drink-temp-option">
+          <option value="Chilled Ice-Cold">🧊 Chilled / Ice-Cold</option>
+          <option value="Room Temperature">🌡️ Room Temperature</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="delivery-timing">⏱️ Preferred Timing</label>
+        <select id="delivery-timing">
+          <option value="Deliver ASAP (5-10 mins)">⚡ Deliver ASAP (5-10 mins)</option>
+          <option value="Late Midnight (After 1:00 AM)">🌙 Late Midnight Delivery</option>
+          <option value="Morning Wake-up (8:00 AM)">☀️ Morning Tea Delivery (8:00 AM)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="cust-note">📝 Cooking / Delivery Note (Optional)</label>
+        <input type="text" id="cust-note" placeholder="e.g. Make it soupy / Deliver near balcony" />
+      </div>
+
+      <div class="form-group">
+        <label for="pay-method">💳 Payment Method</label>
+        <select id="pay-method" onchange="togglePaymentView()">
+          <option value="Online UPI">Pay Online via UPI (GPay / PhonePe / Paytm)</option>
+          <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+        </select>
+      </div>
+
+      <div id="upi-section" class="upi-box">
+        <a id="upi-intent-link" href="#" class="upi-pay-btn">⚡ Click to Pay via GPay / UPI App</a>
+        
+        <button class="copy-upi-btn" onclick="copyUpiId()">📋 Copy UPI ID (<span id="upi-id-label">9389393768@upi</span>)</button>
+
+        <div style="font-size: 0.82rem; font-weight: 600; color: #475569; margin-bottom: 4px;">Or scan your custom QR code:</div>
+        
+        <div class="qr-container">
+          <!-- Loads qr-code.png from repo root, with automatic fallback -->
+          <img id="upi-qr-img" src="qr-code.png" alt="Hostel UPI QR Code" onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=190x190&data=upi%3A%2F%2Fpay%3Fpa%3D9389393768%40upi%26pn%3Di7%2520Hostel%2520Store';" />
+        </div>
+        
+        <div class="tip-box">
+          📸 <strong>Important:</strong> Please take a screenshot after paying and attach it in the WhatsApp chat for instant order dispatch!
+        </div>
+      </div>
+
+      <button id="place-order-btn" class="place-order-btn" onclick="submitOrder()">✅ Place Order (WhatsApp + Email)</button>
+    </div>
+  </div>
+
+  <!-- Manage Drawer (Passcode Protected) -->
+  <div class="drawer" id="manage-drawer">
+    <div class="drawer-header">
+      <h2>⚙️ Store Management & Analytics</h2>
+      <button class="close-btn" onclick="closeAllDrawers()">&times;</button>
+    </div>
+
+    <!-- Analytics Cards -->
+    <div class="admin-stats-grid">
+      <div class="stat-card">
+        <h4>Total Orders</h4>
+        <div id="stat-orders-count">0</div>
+      </div>
+      <div class="stat-card">
+        <h4>Est. Revenue</h4>
+        <div id="stat-revenue" style="color: #22c55e;">₹0</div>
+      </div>
+    </div>
+
+    <button class="export-btn" onclick="exportOrdersCSV()">📊 Download Daily Sales (Excel/CSV)</button>
+
+    <!-- Store Open / Close Control -->
+    <div class="status-toggle-card" style="margin-top: 14px;">
+      <div>
+        <strong id="store-status-text">Store Status: OPEN</strong>
+        <p style="font-size:0.75rem; color:#64748b;">Turn off when sleeping or studying</p>
+      </div>
+      <button class="toggle-stock-btn" onclick="toggleStoreStatus()">Toggle Status</button>
+    </div>
+
+    <!-- Marquee Text Editor -->
+    <div class="form-group" style="margin-top:10px;">
+      <label>Edit Top Announcement Ticker</label>
+      <input type="text" id="admin-marquee-input" placeholder="Enter marquee text..." />
+      <button class="toggle-stock-btn" style="width:100%; margin-top:4px;" onclick="updateMarqueeText()">Update Ticker</button>
+    </div>
+
+    <!-- Change Passcode -->
+    <div class="form-group" style="margin-top:10px;">
+      <label>Change Manage Passcode</label>
+      <div class="form-row">
+        <input type="text" id="new-manage-pass" placeholder="New passcode" />
+        <button class="toggle-stock-btn" onclick="updateManagePasscode()">Change</button>
+      </div>
+    </div>
+
+    <!-- Add Item -->
+    <h3 style="font-size: 0.95rem; margin: 16px 0 8px;">➕ Add New Item</h3>
+    <div class="form-group">
+      <label>Product Name</label>
+      <input type="text" id="new-item-name" placeholder="e.g. Red Bull, Chips, Notebook" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Price (₹)</label>
+        <input type="number" id="new-item-price" placeholder="25" />
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="new-item-category">
+          <option value="Combos">Combos</option>
+          <option value="Drinks">Drinks</option>
+          <option value="Snacks">Snacks</option>
+          <option value="Meals">Meals</option>
+          <option value="Sweets">Sweets</option>
+          <option value="Stationary">Stationary</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Product Image (Camera / Gallery / Photos)</label>
+      <input type="file" id="new-item-file" accept="image/*" onchange="handleImagePreview(event)" />
+      <div class="image-preview" id="image-preview-container">
+        <span style="font-size: 0.8rem; color: #94a3b8;">Uploaded photo preview appears here</span>
+      </div>
+    </div>
+
+    <button class="save-item-btn" onclick="addNewProduct()">Save & Add Product</button>
+  </div>
+
+  <!-- Spin the Wheel Modal -->
+  <div class="wheel-modal" id="wheel-modal">
+    <div class="wheel-card">
+      <h3>🎰 Midnight Lucky Spin</h3>
+      <p style="font-size: 0.85rem; margin: 8px 0; color: #cbd5e1;">Spin to win discount vouchers for your midnight craving!</p>
+      <div id="wheel-result" style="font-size: 1.4rem; font-weight: 800; color: #facc15; margin: 16px 0;">🎁 ???</div>
+      <button class="spin-btn" id="spin-action-btn" onclick="spinWheel()">Spin Now!</button>
+      <button style="background:none; border:none; color:#94a3b8; display:block; margin:14px auto 0; cursor:pointer;" onclick="closeWheelModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Recent Order Toast Popup -->
+  <div class="recent-order-toast" id="recent-toast">
+    <span style="font-size: 1.2rem;">🔥</span>
+    <span id="recent-toast-text">Room 204 just ordered Butter Maggi + Monster!</span>
+  </div>
+
+  <!-- i7 COMPANY 30s AD MODAL (Unskippable for 10s) -->
+  <div class="ad-overlay" id="ad-modal">
+    <div class="ad-card">
+      <div class="ad-tag">🚀 SPECIAL OFFER FROM i7 COMPANY</div>
+      <h2>Need a Website for Your Business?</h2>
+      <p>Get high-speed, custom modern websites built with WhatsApp integration, online payment gateways, and sleek design.</p>
+      
+      <div class="ad-stats">
+        <div class="ad-stat-item">
+          <h3>41+</h3>
+          <span>Projects Completed</span>
+        </div>
+        <div class="ad-stat-item">
+          <h3>12</h3>
+          <span>Small Projects</span>
+        </div>
+        <div class="ad-stat-item">
+          <h3>100%</h3>
+          <span>Responsive</span>
+        </div>
+      </div>
+
+      <div class="ad-price-pill">Plans Starting From Just ₹15,000</div>
+
+      <a href="https://wa.me/919389393768?text=Hi%20i7%20Company,%20I%20am%20interested%20in%20getting%20a%20website%20made%20(Starting%20from%20₹15,000)." class="ad-cta-btn" target="_blank">
+        💬 Inquire Now on WhatsApp
+      </a>
+
+      <button id="ad-skip-btn" class="ad-skip-btn" onclick="closeAdModal()" disabled>
+        Skip ad in 10s...
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ================= CONFIGURATION =================
+    let MANAGE_PASS = localStorage.getItem("i7_passcode") || "7778";
+    const UPI_ID = "9389393768@upi"; 
+    const MERCHANT_NAME = "i7 Hostel Store";
+    const WHATSAPP_NUMBER = "919389393768";
+    const NOTIFICATION_EMAIL = "yzx5217@gmail.com";
+    // =================================================
+
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "combo1",
+        name: "Exam Cram Survival Pack (Monster + Lay's + Maggi)",
+        category: "Combos",
+        price: 165,
+        inStock: true,
+        bestseller: true,
+        img: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=300&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "monster",
+        name: "Monster Energy (Chilled)",
+        category: "Drinks",
+        price: 115,
+        inStock: true,
+        bestseller: true,
+        img: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=300&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "lays",
+        name: "Lay's Magic Masala",
+        category: "Snacks",
+        price: 25,
+        inStock: true,
+        bestseller: true,
+        img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "kurkure",
+        name: "Kurkure Masala Munch",
+        category: "Snacks",
+        price: 20,
+        inStock: true,
+        bestseller: false,
+        img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281270?w=300&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "maggi",
+        name: "Cooked Butter Maggi",
+        category: "Meals",
+        price: 35,
+        inStock: true,
+        bestseller: true,
+        img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300&auto=format&fit=crop&q=60"
+      },
+      {
+        id: "pen_stationary",
+        name: "Reynolds Ball Point Pen (Blue/Black)",
+        category: "Stationary",
+        price: 10,
+        inStock: true,
+        bestseller: false,
+        img: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=300&auto=format&fit=crop&q=60"
+      }
+    ];
+
+    let products = JSON.parse(localStorage.getItem("i7_products")) || DEFAULT_PRODUCTS;
+    let isStoreOpen = JSON.parse(localStorage.getItem("i7_store_open")) ?? true;
+    let totalOrdersPlaced = parseInt(localStorage.getItem("i7_orders_count") || "0");
+    let totalRevenueEst = parseInt(localStorage.getItem("i7_revenue_count") || "0");
+    let discountAmount = 0;
+
+    let cart = {};
+    let isManageUnlocked = false;
+    let currentCategory = "All";
+    let searchQuery = "";
+    let uploadedImageData = "";
+
+    // Web Audio Synthesizer for lag-free sound effects
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'pop') {
+        osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+      } else if (type === 'cash') {
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // Reorder Memory Auto-fill
+      const savedName = localStorage.getItem("i7_saved_name");
+      const savedPhone = localStorage.getItem("i7_saved_phone");
+      const savedBlock = localStorage.getItem("i7_saved_block");
+      const savedRoom = localStorage.getItem("i7_saved_room");
+
+      if (savedName) document.getElementById("cust-name").value = savedName;
+      if (savedPhone) document.getElementById("cust-phone").value = savedPhone;
+      if (savedBlock) document.getElementById("cust-block").value = savedBlock;
+      if (savedRoom) {
+        document.getElementById("cust-room").value = savedRoom;
+        updateFloorEstimate();
+      }
+
+      const savedMarquee = localStorage.getItem("i7_marquee_text");
+      if (savedMarquee) {
+        document.getElementById("live-marquee-text").innerText = savedMarquee;
+        document.getElementById("admin-marquee-input").value = savedMarquee;
+      }
+
+      renderProducts();
+      updateManageStats();
+      initAdTimer();
+      initRecentOrdersToast();
+    });
+
+    // Auto-calculate Floor from room number
+    function updateFloorEstimate() {
+      const room = document.getElementById("cust-room").value.trim();
+      const display = document.getElementById("cust-floor-display");
+      if (!room) {
+        display.value = "Ground / Unknown";
+        return;
+      }
+      const num = parseInt(room.replace(/\D/g, ''));
+      if (!isNaN(num)) {
+        if (num < 100) display.value = "Ground Floor";
+        else if (num >= 100 && num < 200) display.value = "1st Floor";
+        else if (num >= 200 && num < 300) display.value = "2nd Floor";
+        else if (num >= 300 && num < 400) display.value = "3rd Floor";
+        else if (num >= 400 && num < 500) display.value = "4th Floor";
+        else display.value = `${Math.floor(num / 100)}th Floor`;
+      } else {
+        display.value = "Ground Floor";
+      }
+    }
+
+    // Social proof toasts
+    function initRecentOrdersToast() {
+      const fakeOrders = [
+        "Room 204 (B-Block) just ordered Monster + Butter Maggi! 🔥",
+        "A-Block Room 112 ordered 2x Kurkure & Lay's! 🍟",
+        "Room 305 ordered Exam Cram Pack! ⚡",
+        "C-Block Room 402 ordered Chilled Energy Drink! 🥤"
+      ];
+      setInterval(() => {
+        const toast = document.getElementById("recent-toast");
+        const randomMsg = fakeOrders[Math.floor(Math.random() * fakeOrders.length)];
+        document.getElementById("recent-toast-text").innerText = randomMsg;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 4000);
+      }, 25000);
+    }
+
+    // Spin wheel mini-game
+    function openWheelModal() { document.getElementById("wheel-modal").style.display = "flex"; }
+    function closeWheelModal() { document.getElementById("wheel-modal").style.display = "none"; }
+    function spinWheel() {
+      const rewards = ["₹5 OFF Coupon", "Free Extra Butter", "₹10 OFF Coupon", "Better luck next spin!"];
+      const chosen = rewards[Math.floor(Math.random() * rewards.length)];
+      document.getElementById("wheel-result").innerText = `🎉 ${chosen}!`;
+      if (chosen.includes("₹5")) discountAmount = 5;
+      if (chosen.includes("₹10")) discountAmount = 10;
+      document.getElementById("spin-action-btn").disabled = true;
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("cyberpunk-theme");
+    }
+
+    function copyUpiId() {
+      navigator.clipboard.writeText(UPI_ID).then(() => {
+        alert("UPI ID (9389393768@upi) copied to clipboard!");
+      });
+    }
+
+    function updateMarqueeText() {
+      const txt = document.getElementById("admin-marquee-input").value.trim();
+      if (!txt) return;
+      document.getElementById("live-marquee-text").innerText = txt;
+      localStorage.setItem("i7_marquee_text", txt);
+      alert("Announcement ticker updated!");
+    }
+
+    function updateManagePasscode() {
+      const newPass = document.getElementById("new-manage-pass").value.trim();
+      if (!newPass) return;
+      MANAGE_PASS = newPass;
+      localStorage.setItem("i7_passcode", newPass);
+      alert(`Passcode updated to: ${newPass}`);
+    }
+
+    function exportOrdersCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,Total_Orders,Estimated_Revenue,Status\n";
+      csvContent += `${totalOrdersPlaced},${totalRevenueEst},${isStoreOpen ? 'Open' : 'Closed'}\n`;
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `i7_store_sales_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 30s Ad Logic
+    function initAdTimer() {
+      setTimeout(() => {
+        const adModal = document.getElementById("ad-modal");
+        const skipBtn = document.getElementById("ad-skip-btn");
+        adModal.style.display = "flex";
+
+        let timeLeft = 10;
+        const countdownInterval = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+            skipBtn.innerText = `Skip ad in ${timeLeft}s...`;
+          } else {
+            clearInterval(countdownInterval);
+            skipBtn.innerText = "✕ Close Ad";
+            skipBtn.disabled = false;
+            skipBtn.classList.add("ready");
+          }
+        }, 1000);
+      }, 30000);
+    }
+
+    function closeAdModal() {
+      const skipBtn = document.getElementById("ad-skip-btn");
+      if (!skipBtn.disabled) document.getElementById("ad-modal").style.display = "none";
+    }
+
+    function saveProducts() {
+      try {
+        localStorage.setItem("i7_products", JSON.stringify(products));
+      } catch (e) {
+        alert("Storage full! Please use smaller images.");
+      }
+    }
+
+    function saveStoreStatus() {
+      localStorage.setItem("i7_store_open", JSON.stringify(isStoreOpen));
+    }
+
+    function updateManageStats() {
+      document.getElementById("stat-orders-count").innerText = totalOrdersPlaced;
+      document.getElementById("stat-revenue").innerText = `₹${totalRevenueEst}`;
+    }
+
+    function renderProducts() {
+      const container = document.getElementById("product-container");
+
+      const filtered = products.filter(item => {
+        const matchesCat = currentCategory === "All" || item.category === currentCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 30px 0; color:#94a3b8;">No items found.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="card ${item.inStock ? '' : 'sold-out'}">
+          <img src="${item.img || 'https://via.placeholder.com/82?text=Item'}" alt="${item.name}" />
+          <div class="card-info">
+            <div class="badge-wrap">
+              <span class="card-badge">${item.category || 'Snack'}</span>
+              ${item.bestseller ? '<span class="bestseller-badge">🔥 Bestseller</span>' : ''}
+            </div>
+            <h3>${item.name}</h3>
+            <div class="price">₹${item.price}</div>
+          </div>
+          <div class="card-actions">
+            <button class="add-btn" 
+              ${!item.inStock || !isStoreOpen ? 'disabled' : ''} 
+              onclick="addToCart('${item.id}')">
+              ${!isStoreOpen ? 'Closed' : (!item.inStock ? 'Sold Out' : '+ Add')}
+            </button>
+            <div class="admin-item-tools" id="adm-tools-${item.id}">
+              <button class="toggle-stock-btn" onclick="toggleStock('${item.id}')">${item.inStock ? 'Out' : 'In'}</button>
+              <button class="edit-item-btn" onclick="editProductPrice('${item.id}')">✏️ Edit</button>
+              <button class="delete-item-btn" onclick="deleteProduct('${item.id}')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      if (isManageUnlocked) {
+        document.querySelectorAll('.admin-item-tools').forEach(div => div.style.display = 'flex');
+      }
+
+      updateStoreStatusUI();
+    }
+
+    function updateStoreStatusUI() {
+      const banner = document.getElementById("status-banner");
+      const orderBtn = document.getElementById("place-order-btn");
+      const statusText = document.getElementById("store-status-text");
+
+      if (!isStoreOpen) {
+        banner.style.display = "block";
+        orderBtn.disabled = true;
+        orderBtn.innerText = "Store Closed";
+        statusText.innerText = "Store Status: CLOSED 🔴";
+      } else {
+        banner.style.display = "none";
+        orderBtn.disabled = false;
+        orderBtn.innerText = "✅ Place Order (WhatsApp + Email)";
+        statusText.innerText = "Store Status: OPEN 🟢";
+      }
+    }
+
+    function toggleStoreStatus() {
+      isStoreOpen = !isStoreOpen;
+      saveStoreStatus();
+      updateStoreStatusUI();
+      renderProducts();
+    }
+
+    function toggleStock(id) {
+      const item = products.find(p => p.id === id);
+      if (item) {
+        item.inStock = !item.inStock;
+        if (!item.inStock && cart[id]) delete cart[id];
+        saveProducts();
+        renderProducts();
+        updateCartUI();
+      }
+    }
+
+    function editProductPrice(id) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+      const newPrice = prompt(`Enter new price for ${item.name}:`, item.price);
+      if (newPrice && !isNaN(newPrice) && parseFloat(newPrice) > 0) {
+        item.price = parseFloat(newPrice);
+        saveProducts();
+        renderProducts();
+        updateCartUI();
+      }
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".cat-chip").forEach(chip => {
+        chip.classList.toggle("active", chip.innerText.includes(cat) || (cat === 'All' && chip.innerText.includes('All')));
+      });
+      document.getElementById("active-category-indicator").innerText = `Category: ${cat}`;
+      renderProducts();
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById("search-input").value.trim();
+      renderProducts();
+    }
+
+    function promptManageLogin() {
+      if (isManageUnlocked) {
+        openManageDrawer();
+        return;
+      }
+      const pass = prompt("Enter Manage Passcode:");
+      if (pass === MANAGE_PASS) {
+        isManageUnlocked = true;
+        alert("Access Granted! Store Management tools unlocked.");
+        document.querySelectorAll('.admin-item-tools').forEach(div => div.style.display = 'flex');
+        openManageDrawer();
+      } else if (pass !== null) {
+        alert("Incorrect passcode!");
+      }
+    }
+
+    function openManageDrawer() {
+      document.getElementById("manage-drawer").classList.add("active");
+      document.getElementById("overlay").classList.add("active");
+    }
+
+    function handleImagePreview(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 300;
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          uploadedImageData = canvas.toDataURL("image/jpeg", 0.7);
+          document.getElementById("image-preview-container").innerHTML = `<img src="${uploadedImageData}" alt="Preview" />`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addNewProduct() {
+      const name = document.getElementById("new-item-name").value.trim();
+      const price = parseFloat(document.getElementById("new-item-price").value);
+      const category = document.getElementById("new-item-category").value;
+      const img = uploadedImageData || "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=300&auto=format&fit=crop&q=60";
+
+      if (!name || isNaN(price) || price <= 0) {
+        alert("Please enter a valid product name and price!");
+        return;
+      }
+
+      const newProduct = {
+        id: "prod_" + Date.now(),
+        name: name,
+        category: category,
+        price: price,
+        inStock: true,
+        bestseller: false,
+        img: img
+      };
+
+      products.push(newProduct);
+      saveProducts();
+      renderProducts();
+
+      document.getElementById("new-item-name").value = "";
+      document.getElementById("new-item-price").value = "";
+      document.getElementById("new-item-file").value = "";
+      uploadedImageData = "";
+      document.getElementById("image-preview-container").innerHTML = `<span style="font-size: 0.8rem; color: #94a3b8;">Uploaded photo preview appears here</span>`;
+
+      alert(`'${name}' added to store menu!`);
+      closeAllDrawers();
+    }
+
+    function deleteProduct(id) {
+      if (!confirm("Delete this product from your inventory?")) return;
+      products = products.filter(p => p.id !== id);
+      delete cart[id];
+      saveProducts();
+      renderProducts();
+      updateCartUI();
+    }
+
+    function addToCart(id) {
+      if (!isStoreOpen) {
+        alert("Store is closed right now!");
+        return;
+      }
+      playSound('pop');
+      cart[id] = (cart[id] || 0) + 1;
+      updateCartUI();
+    }
+
+    function changeQuantity(id, delta) {
+      if (!cart[id]) return;
+      cart[id] += delta;
+      if (cart[id] <= 0) delete cart[id];
+      updateCartUI();
+      renderCartDrawer();
+    }
+
+    function updateCartUI() {
+      const totalCount = Object.values(cart).reduce((sum, q) => sum + q, 0);
+      document.getElementById("cart-count").innerText = totalCount;
+    }
+
+    function calculateSubtotal() {
+      return Object.entries(cart).reduce((sum, [id, qty]) => {
+        const item = products.find(p => p.id === id);
+        return sum + (item ? item.price * qty : 0);
+      }, 0);
+    }
+
+    function openCheckout() {
+      renderCartDrawer();
+      document.getElementById("checkout-drawer").classList.add("active");
+      document.getElementById("overlay").classList.add("active");
+    }
+
+    function closeAllDrawers() {
+      document.getElementById("checkout-drawer").classList.remove("active");
+      document.getElementById("manage-drawer").classList.remove("active");
+      document.getElementById("overlay").classList.remove("active");
+    }
+
+    function renderCartDrawer() {
+      const container = document.getElementById("cart-items-container");
+      const formSection = document.getElementById("checkout-form-section");
+      const entries = Object.entries(cart);
+
+      if (entries.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding: 25px 0; color:#64748b;">Your cart is empty! Add snacks first.</div>`;
+        formSection.style.display = "none";
+        document.getElementById("cart-total").innerText = "₹0";
+        return;
+      }
+
+      formSection.style.display = "block";
+      let hasMaggi = false;
+      let hasDrink = false;
+
+      container.innerHTML = entries.map(([id, qty]) => {
+        const product = products.find(p => p.id === id);
+        if (product.id.includes("maggi") || product.name.toLowerCase().includes("maggi")) hasMaggi = true;
+        if (product.category === "Drinks" || product.name.toLowerCase().includes("monster")) hasDrink = true;
+
+        return `
+          <div class="cart-item">
+            <div>
+              <strong>${product.name}</strong>
+              <div style="font-size:0.85rem; color:#64748b;">₹${product.price} each</div>
+            </div>
+            <div class="qty-controls">
+              <button class="qty-btn" onclick="changeQuantity('${id}', -1)">-</button>
+              <span>${qty}</span>
+              <button class="qty-btn" onclick="changeQuantity('${id}', 1)">+</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("maggi-options-group").style.display = hasMaggi ? "block" : "none";
+      document.getElementById("drink-options-group").style.display = hasDrink ? "block" : "none";
+
+      const subtotal = calculateSubtotal();
+      const maggiAddon = hasMaggi ? parseInt(document.getElementById("maggi-custom-addon").value || "0") : 0;
+      
+      // Free delivery calculation (Threshold: ₹100)
+      const deliveryFee = subtotal >= 100 ? 0 : 15;
+      const progressPercent = Math.min(100, (subtotal / 100) * 100);
+      document.getElementById("delivery-progress-bar").style.width = `${progressPercent}%`;
+
+      if (deliveryFee === 0) {
+        document.getElementById("delivery-progress-text").innerText = "🎉 You unlocked FREE Late-Night Delivery!";
+        document.getElementById("delivery-status-badge").innerText = "FREE";
+        document.getElementById("delivery-status-badge").style.color = "#22c55e";
+      } else {
+        const needed = 100 - subtotal;
+        document.getElementById("delivery-progress-text").innerText = `Add ₹${needed} more for FREE Delivery!`;
+        document.getElementById("delivery-status-badge").innerText = "+₹15 Delivery Fee";
+        document.getElementById("delivery-status-badge").style.color = "#e11d48";
+      }
+
+      const total = Math.max(0, subtotal + maggiAddon + deliveryFee - discountAmount);
+      document.getElementById("cart-total").innerText = `₹${total} ${discountAmount > 0 ? `(Saved ₹${discountAmount})` : ''}`;
+      togglePaymentView();
+    }
+
+    function togglePaymentView() {
+      const method = document.getElementById("pay-method").value;
+      const upiSection = document.getElementById("upi-section");
+      if (method === "Online UPI") {
+        upiSection.style.display = "block";
+        updateUPIPaymentDetails();
+      } else {
+        upiSection.style.display = "none";
+      }
+    }
+
+    function updateUPIPaymentDetails() {
+      const subtotal = calculateSubtotal();
+      const deliveryFee = subtotal >= 100 ? 0 : 15;
+      const total = Math.max(0, subtotal + deliveryFee - discountAmount);
+      const upiUrl = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${total}&cu=INR&tn=${encodeURIComponent("Hostel Order")}`;
+      document.getElementById("upi-intent-link").href = upiUrl;
+    }
+
+    function submitOrder() {
+      if (!isStoreOpen) {
+        alert("Sorry! Store is closed right now.");
+        return;
+      }
+
+      const name = document.getElementById("cust-name").value.trim();
+      const phone = document.getElementById("cust-phone").value.trim();
+      const block = document.getElementById("cust-block").value;
+      const room = document.getElementById("cust-room").value.trim();
+      const floor = document.getElementById("cust-floor-display").value;
+      const isSilent = document.getElementById("silent-delivery-check").checked;
+      const timing = document.getElementById("delivery-timing").value;
+      const note = document.getElementById("cust-note").value.trim();
+      const paymentMethod = document.getElementById("pay-method").value;
+
+      if (!name || !room) {
+        alert("Please enter both your name and room number!");
+        return;
+      }
+
+      if (Object.keys(cart).length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+
+      // Confetti burst on checkout!
+      playSound('cash');
+      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+
+      localStorage.setItem("i7_saved_name", name);
+      localStorage.setItem("i7_saved_phone", phone);
+      localStorage.setItem("i7_saved_block", block);
+      localStorage.setItem("i7_saved_room", room);
+
+      let itemsSummary = "";
+      const subtotal = calculateSubtotal();
+      const deliveryFee = subtotal >= 100 ? 0 : 15;
+      const total = Math.max(0, subtotal + deliveryFee - discountAmount);
+
+      Object.entries(cart).forEach(([id, qty]) => {
+        const product = products.find(p => p.id === id);
+        itemsSummary += `• ${product.name} x ${qty} = ₹${product.price * qty}\n`;
+      });
+
+      totalOrdersPlaced += 1;
+      totalRevenueEst += total;
+      localStorage.setItem("i7_orders_count", totalOrdersPlaced.toString());
+      localStorage.setItem("i7_revenue_count", totalRevenueEst.toString());
+
+      const emailPayload = {
+        _subject: `⚡ New Order from ${name} (${block} - ${room})`,
+        Customer_Name: name,
+        Mobile_Number: phone || "Not Provided",
+        Hostel_Location: `${block}, Room ${room} (${floor})`,
+        Silent_Delivery: isSilent ? "YES (Don't knock door)" : "NO",
+        Preferred_Timing: timing,
+        Payment_Method: paymentMethod,
+        Special_Note: note || "None",
+        Ordered_Items: itemsSummary,
+        Total_Amount: `₹${total} (Delivery: ₹${deliveryFee})`,
+        Order_Time: new Date().toLocaleString()
+      };
+
+      fetch(`https://formsubmit.co/ajax/${NOTIFICATION_EMAIL}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(emailPayload)
+      }).catch(err => console.log("Email log:", err));
+
+      const message = 
+`*⚡ NEW ORDER - i7 HOSTEL STORE*
+-----------------------------
+*👤 Customer Details:*
+• *Name:* ${name} ${phone ? `(${phone})` : ''}
+• *Location:* ${block}, Room ${room} [${floor}]
+• *Silent Delivery:* ${isSilent ? '🤫 YES (Roommate sleeping - Do NOT knock, WhatsApp/Call only)' : 'No'}
+• *Preferred Timing:* ${timing}
+• *Payment:* ${paymentMethod}
+${note ? `• *Note:* _"${note}"_\n` : ''}-----------------------------
+*🛒 Items Ordered:*
+${itemsSummary}
+• *Delivery Fee:* ₹${deliveryFee}
+*💰 Total Amount:* ₹${total} ${discountAmount > 0 ? `(Discount: -₹${discountAmount})` : ''}
+-----------------------------
+${paymentMethod === 'Online UPI' ? '_(Payment made via UPI / QR. Screenshot attached below)_' : '_(Collect cash on delivery)_'}`;
+
+      document.getElementById("delivery-tracker").style.display = "block";
+
+      const encodedMsg = encodeURIComponent(message);
+      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
+    }
+  </script>
+</body>
+</html>
